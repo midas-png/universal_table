@@ -1,0 +1,42 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.table thead {
+    background-color: #f2f2f2;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table th {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.table tr {
+    background-color: #f2f2f2;
+}
+
+.table tr td {
+    color: #000;
+}
+
+.table button {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.table button:hover {
+    background-color: #45a049;
+}

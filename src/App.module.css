@@ -1,0 +1,10 @@
+:root {
+    --font-family: 'Arial', sans-serif;
+}
+
+.appContainer {
+    padding: 20px;
+    font-family: var(--font-family);
+    background-color: #f8f8f8;
+    min-height: 100vh;
+}
