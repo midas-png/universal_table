@@ -3,6 +3,9 @@
 }
 
 .appContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     padding: 20px;
     font-family: var(--font-family);
     background-color: #2a2a2a;

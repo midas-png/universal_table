@@ -95,7 +95,7 @@ export const PagesPage: FC = () => {
         <>
             <input
                 type="text"
-                placeholder="Filter by name"
+                placeholder="Filter textfield"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
             />
