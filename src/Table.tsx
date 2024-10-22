@@ -1,20 +1,24 @@
 import styles from "./Table.module.css";
-import { TableData } from "./types";
+import { isOptions, TableData } from "./types";
 
 interface TableProps<T> {
     data: T[];
-    columns: { key: keyof T; header: string | JSX.Element }[];
+    columns: {
+        key: keyof T;
+        header: string | JSX.Element;
+        renderCell?: (item: T) => JSX.Element;
+    }[];
     onEdit: (item: T) => void;
     filter: string;
+    visibleOptionsMap: Record<number, string[]>;
 }
-
-type CellValue = string | number | boolean | object | null | undefined;
 
 export const Table = <T extends TableData>({
     data,
     columns,
     onEdit,
     filter,
+    visibleOptionsMap,
 }: TableProps<T>): JSX.Element => {
     const filteredData = data.filter((item) =>
         columns.some((column) =>
@@ -24,7 +28,30 @@ export const Table = <T extends TableData>({
         )
     );
 
-    const renderCellValue = (value: CellValue) => {
+    const renderCellValue = (item: T, key: keyof T) => {
+        const value = item[key];
+
+        if (key === "options") {
+            const productId = item.id as number;
+            const visibleOptions = visibleOptionsMap[productId] || [];
+
+            if (isOptions(value)) {
+                return (
+                    <span>
+                        {visibleOptions.includes("size") && (
+                            <>Size: {value.size}</>
+                        )}
+                        {visibleOptions.includes("size") &&
+                            visibleOptions.includes("amount") && <>, </>}
+                        {visibleOptions.includes("amount") && (
+                            <>Amount: {value.amount}</>
+                        )}
+                    </span>
+                );
+            }
+            return null;
+        }
+
         if (typeof value === "string" && Date.parse(value)) {
             return new Date(value).toLocaleString("en-US", {
                 day: "2-digit",
@@ -44,6 +71,7 @@ export const Table = <T extends TableData>({
         return String(value);
     };
 
+
     return (
         <table className={styles.table}>
             <thead>
@@ -59,7 +87,7 @@ export const Table = <T extends TableData>({
                     <tr key={item.id}>
                         {columns.map((column) => (
                             <td key={String(column.key)}>
-                                {renderCellValue(item[column.key] as CellValue)}{" "}
+                                {renderCellValue(item, column.key)}{" "}
                             </td>
                         ))}
                         <td>

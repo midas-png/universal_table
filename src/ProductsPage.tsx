@@ -80,6 +80,16 @@ export const ProductsPage: React.FC = () => {
     const [filter, setFilter] = useState<string>("");
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
+    const initialVisibleOptionsMap = products.reduce((acc, product) => {
+        acc[product.id] = Object.keys(product.options);
+        return acc;
+    }, {} as Record<number, string[]>);
+
+    const [visibleOptionsMap, setVisibleOptionsMap] = useState<
+        Record<number, string[]>
+    >(initialVisibleOptionsMap);
+
+
     const handleEdit = (product: Product) => {
         setEditingProduct(product);
     };
@@ -91,6 +101,13 @@ export const ProductsPage: React.FC = () => {
             )
         );
         setEditingProduct(null);
+    };
+
+    const updateVisibleOptionsMap = (id: number, options: string[]) => {
+        setVisibleOptionsMap((prev) => ({
+            ...prev,
+            [id]: options,
+        }));
     };
 
     return (
@@ -112,12 +129,15 @@ export const ProductsPage: React.FC = () => {
                 ]}
                 onEdit={handleEdit}
                 filter={filter}
+                visibleOptionsMap={visibleOptionsMap}
             />
             {editingProduct && (
                 <Modal
                     item={editingProduct}
                     onSave={handleSave}
                     onClose={() => setEditingProduct(null)}
+                    visibleOptions={visibleOptionsMap[editingProduct.id] || []}
+                    setVisibleOptionsMap={updateVisibleOptionsMap}
                 />
             )}
         </>

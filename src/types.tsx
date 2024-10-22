@@ -1,12 +1,23 @@
+interface Option {
+    size: string;
+    amount: number;
+}
+
 export interface Product {
     id: number;
     name: string;
-    options: {
-        size: string;
-        amount: number;
-    };
+    options: Option;
     active: boolean;
     createdAt: string;
+}
+
+export const isOptions = (value: unknown): value is Option => {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "size" in value &&
+        "amount" in value
+    );
 }
 
 export interface PricePlan {

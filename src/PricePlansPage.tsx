@@ -78,19 +78,25 @@ export const PricePlansPage: FC = () => {
     ]);
 
     const [filter, setFilter] = useState<string>("");
-    const [editingProduct, setEditingProduct] = useState<PricePlan | null>(
-        null
-    );
+    const [editingPlan, setEditingPlan] = useState<PricePlan | null>(null);
+    const [visibleOptionsMap, setVisibleOptionsMap] = useState<
+        Record<number, string[]>
+    >({});
 
-    const handleEdit = (product: PricePlan): void => setEditingProduct(product);
+    const handleEdit = (plan: PricePlan): void => setEditingPlan(plan);
 
-    const handleSave = (updatedProduct: PricePlan): void => {
-        setPricePlans((prevProducts) =>
-            prevProducts.map((p) =>
-                p.id === updatedProduct.id ? updatedProduct : p
-            )
+    const handleSave = (updatedPlan: PricePlan): void => {
+        setPricePlans((prevPlans) =>
+            prevPlans.map((p) => (p.id === updatedPlan.id ? updatedPlan : p))
         );
-        setEditingProduct(null);
+        setEditingPlan(null);
+    };
+
+    const updateVisibleOptionsMap = (id: number, options: string[]) => {
+        setVisibleOptionsMap((prev) => ({
+            ...prev,
+            [id]: options,
+        }));
     };
 
     return (
@@ -112,12 +118,16 @@ export const PricePlansPage: FC = () => {
                 ]}
                 onEdit={handleEdit}
                 filter={filter}
+                visibleOptionsMap={visibleOptionsMap}
             />
-            {editingProduct && (
+            {editingPlan && (
                 <Modal
-                    item={editingProduct}
+                    item={editingPlan}
                     onSave={handleSave}
-                    onClose={() => setEditingProduct(null)}
+                    onClose={() => setEditingPlan(null)}
+                    visibleOptions={visibleOptionsMap[editingPlan.id] || []}
+                    setVisibleOptionsMap={updateVisibleOptionsMap}
+                    hideOptions
                 />
             )}
         </>

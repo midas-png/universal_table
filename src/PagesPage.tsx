@@ -78,17 +78,25 @@ export const PagesPage: FC = () => {
     ]);
 
     const [filter, setFilter] = useState<string>("");
-    const [editingProduct, setEditingProduct] = useState<Page | null>(null);
+    const [editingPage, setEditingPage] = useState<Page | null>(null);
+    const [visibleOptionsMap, setVisibleOptionsMap] = useState<
+        Record<number, string[]>
+    >({});
 
-    const handleEdit = (product: Page): void => setEditingProduct(product);
+    const handleEdit = (page: Page): void => setEditingPage(page);
 
-    const handleSave = (updatedProduct: Page): void => {
-        setPages(
-            pages.map((p) =>
-                p.id === updatedProduct.id ? updatedProduct : p
-            )
+    const handleSave = (updatedPage: Page): void => {
+        setPages((prevPages) =>
+            prevPages.map((p) => (p.id === updatedPage.id ? updatedPage : p))
         );
-        setEditingProduct(null);
+        setEditingPage(null);
+    };
+
+    const updateVisibleOptionsMap = (id: number, options: string[]) => {
+        setVisibleOptionsMap((prev) => ({
+            ...prev,
+            [id]: options,
+        }));
     };
 
     return (
@@ -110,12 +118,16 @@ export const PagesPage: FC = () => {
                 ]}
                 onEdit={handleEdit}
                 filter={filter}
+                visibleOptionsMap={visibleOptionsMap}
             />
-            {editingProduct && (
+            {editingPage && (
                 <Modal
-                    item={editingProduct}
+                    item={editingPage}
                     onSave={handleSave}
-                    onClose={() => setEditingProduct(null)}
+                    onClose={() => setEditingPage(null)}
+                    visibleOptions={visibleOptionsMap[editingPage.id] || []}
+                    setVisibleOptionsMap={updateVisibleOptionsMap}
+                    hideOptions
                 />
             )}
         </>
